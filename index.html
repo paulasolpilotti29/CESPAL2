@@ -72,6 +72,14 @@
     </div>
     <script>
       let base=[];
+      function calle(d){
+
+    return (d||'')
+      .split('CP:')[0]
+      .replace(/[0-9]/g,'')
+      .trim();
+
+};
       function read(f){return new Promise(r=>{let fr=new FileReader();
       fr.onload=e=>r(JSON.parse(e.target.result));fr.readAsText(f);});}
       async function procesar()
@@ -89,7 +97,10 @@
       function render(mt){let totalOT=base.length,
         clientes=new Set(base.map(x=>x.Titular)).size,
         calles=new Set(base.map(x=>x.Domicilio)).size,
-        mat=mt.length,
+        const mat =
+ new Set(
+   mt.map(x=>x.Material)
+ ).size,
         costo=base.reduce((a,b)=>a+b.CostoOT,0),
         prom=totalOT?costo/totalOT:0,
         con=base.filter(x=>x.CantidadMateriales>0).length,
