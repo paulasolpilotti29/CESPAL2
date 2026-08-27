@@ -79,7 +79,11 @@
        let mt=await read(matFile.files[0]);
        let map={};mt.forEach(m=>{
          if(!map[m.OT])map[m.OT]={costo:0,cant:0,par:new Set()};map[m.OT].costo+=(+m.Importe||0);map[m.OT].cant++;
-         if(m.Participantes)map[m.OT].par.add(m.Participantes);});
+         if(Array.isArray(m.Participantes)){
+   m.Participantes.forEach(p=>{
+      map[m.OT].par.add(p);
+   });
+};});
        base=ot.map(o=>({...o,CostoOT:map[o.OT]?.costo||0,CantidadMateriales:map[o.OT]?.cant||0,Participantes:[...(map[o.OT]?.par||[])].join(', ')}));
        render(mt);}
       function render(mt){let totalOT=base.length,
