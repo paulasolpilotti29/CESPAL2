@@ -177,7 +177,8 @@ async function procesar(){
     mt.forEach(m=>{
 
         const key =
-            String(m.OT);
+    String(m.OT)
+    .trim();
 
         if(!map[key]){
 
@@ -213,7 +214,10 @@ async function procesar(){
     base = ot.map(o=>{
 
         const info =
-            map[String(o.OT)];
+    map[
+        String(o.OT)
+        .trim()
+    ];
 
         return {
 
@@ -234,6 +238,23 @@ async function procesar(){
         };
 
     });
+console.log(
+    "Materiales encontrados:",
+    Object.keys(map).length
+);
+
+console.log(
+    "Ejemplo OT:",
+    ot[0].OT
+);
+
+console.log(
+    "Cruce:",
+    map[
+       String(ot[0].OT)
+       .trim()
+    ]
+);
 
     render(mt);
 
