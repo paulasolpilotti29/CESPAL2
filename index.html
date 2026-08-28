@@ -177,8 +177,8 @@ async function procesar(){
 
     mt.forEach(m=>{
 
-       const key =
-    normalizarTitular(
+      const key =
+    claveTitular(
         m.Titular
     );
 
@@ -215,9 +215,9 @@ async function procesar(){
 
     base = ot.map(o=>{
 
-       const info =
+     const info =
     map[
-        normalizarTitular(
+        claveTitular(
             o.Titular
         )
     ];
