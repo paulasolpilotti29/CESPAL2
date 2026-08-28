@@ -277,6 +277,16 @@ console.log(
         .trim();
 
 }
+    function claveTitular(nombre){
+
+    nombre = normalizarTitular(nombre);
+
+    return nombre
+        .split(" ")
+        .slice(0,3)
+        .join(" ");
+
+}
 
 function render(mt){
 
