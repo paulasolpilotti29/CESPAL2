@@ -177,8 +177,9 @@ async function procesar(){
     mt.forEach(m=>{
 
         const key =
-    String(m.OT)
-    .trim();
+            String(m.Titular || "")
+            .trim()
+            .toUpperCase();
 
         if(!map[key]){
 
@@ -214,10 +215,11 @@ async function procesar(){
     base = ot.map(o=>{
 
         const info =
-    map[
-        String(o.OT)
-        .trim()
-    ];
+            map[
+                String(o.Titular || "")
+                .trim()
+                .toUpperCase()
+            ];
 
         return {
 
@@ -231,30 +233,22 @@ async function procesar(){
 
             Participantes:
                 info
-                ? [...info.participantes]
-                    .join(", ")
+                ? [...info.participantes].join(", ")
                 : ""
 
         };
 
     });
-console.log(
-    "Materiales encontrados:",
-    Object.keys(map).length
-);
 
-console.log(
-    "Ejemplo OT:",
-    ot[0].OT
-);
+    console.log(
+        "Titulares Materiales:",
+        Object.keys(map).length
+    );
 
-console.log(
-    "Cruce:",
-    map[
-       String(ot[0].OT)
-       .trim()
-    ]
-);
+    console.log(
+        "Titular ejemplo:",
+        ot[0].Titular
+    );
 
     render(mt);
 
