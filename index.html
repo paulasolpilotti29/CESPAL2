@@ -838,45 +838,55 @@ function crearMateriales(materiales){
 
 function crearParticipantes(materiales){
 
-    const data={};
+    const data = {};
 
     materiales.forEach(m=>{
 
-        const texto=
+        let texto =
             String(
-                m.PARTICIPANTES || ""
+                m.PARTICIPANTES ||
+                m.Participantes ||
+                ""
             );
 
+        if(!texto) return;
+
         texto
-        .split(";")
-        .forEach(p=>{
+            .split(",")
+            .forEach(p=>{
 
-            p=p.trim();
+                p = p.trim();
 
-            if(!p) return;
+                p = p.replace(/^\d+\s*-\s*/,"");
 
-            data[p]=
-                (data[p]||0)+1;
+                if(!p) return;
 
-        });
+                data[p] =
+                    (data[p] || 0) + 1;
+
+            });
 
     });
 
-    const top=
+    const top =
         Object.entries(data)
         .sort((a,b)=>b[1]-a[1])
-        .slice(0,10);
+        .slice(0,15);
 
-    chartParticipantes=
+    if(chartParticipantes)
+        chartParticipantes.destroy();
+
+    chartParticipantes =
         new Chart(
             document.getElementById("chartParticipantes"),
             {
-                type:'bar',
+                type:"bar",
                 data:{
                     labels:top.map(x=>x[0]),
                     datasets:[{
+                        label:"Participaciones",
                         data:top.map(x=>x[1]),
-                        backgroundColor:'#dc3545'
+                        backgroundColor:"#dc3545"
                     }]
                 },
                 options:{
@@ -890,6 +900,7 @@ function crearParticipantes(materiales){
                 }
             }
         );
+
 }
 
 function crearOrigen(){
