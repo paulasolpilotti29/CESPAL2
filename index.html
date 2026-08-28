@@ -2,192 +2,209 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Dashboard Ejecutivo CESPAL</title>
+<title>Dashboard CESPAL</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body{
-    font-family:Segoe UI,sans-serif;
-    background:#f5f7f8;
-}
 
-.top{
-    background:#003b26;
-    color:#fff;
-    padding:18px;
+body{
+    background:#f5f6fa;
 }
 
 .card-kpi{
+    text-align:center;
+    padding:20px;
     border:none;
-    border-radius:16px;
-    box-shadow:0 2px 10px rgba(0,0,0,.10);
+    border-radius:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
 }
 
-.kpi{
+.card-kpi h3{
     font-size:28px;
-    font-weight:700;
-    color:#006b3f;
+    font-weight:bold;
+    color:#0d6efd;
 }
 
 canvas{
-    max-height:350px;
+    background:white;
+    padding:10px;
+    border-radius:12px;
+    box-shadow:0 3px 10px rgba(0,0,0,.08);
 }
+
+table{
+    font-size:12px;
+}
+
 </style>
 
 </head>
-
 <body>
+
+<div class="container-fluid p-4">
+
+<h2 class="mb-4">
+Dashboard CESPAL
+</h2>
+
+<div class="row mb-4">
+
 <div class="col-md-6">
-    <canvas id="c5"></canvas>
-    <canvas id="c6"></canvas>
+<label class="form-label">
+OT Consolidado
+</label>
+
+<input
+id="otFile"
+type="file"
+class="form-control"
+accept=".json">
 </div>
-<div class="top">
-    <h2>Dashboard Ejecutivo</h2>
+
+<div class="col-md-6">
+<label class="form-label">
+Materiales
+</label>
+
+<input
+id="matFile"
+type="file"
+class="form-control"
+accept=".json">
 </div>
 
-<div class="container-fluid p-3">
+</div>
 
-    <div class="row g-2 mb-3">
+<button
+class="btn btn-primary mb-4"
+onclick="procesar()">
 
-        <div class="col-md-4">
-            <input type="file" id="otFile" class="form-control">
-        </div>
+Procesar Información
 
-        <div class="col-md-4">
-            <input type="file" id="matFile" class="form-control">
-        </div>
+</button>
 
-        <div class="col-md-4">
-            <button class="btn btn-success w-100" onclick="procesar()">
-                Procesar Datos
-            </button>
-        </div>
+<div class="row mb-4">
 
-    </div>
+<div class="col-md-3">
+<div class="card card-kpi">
+<h6>OT</h6>
+<h3 id="kpiOT">0</h3>
+</div>
+</div>
 
-    <div class="row g-3" id="kpis"></div>
+<div class="col-md-3">
+<div class="card card-kpi">
+<h6>Costo Total</h6>
+<h3 id="kpiCosto">$0</h3>
+</div>
+</div>
 
-    <div class="row mt-3">
+<div class="col-md-3">
+<div class="card card-kpi">
+<h6>Materiales</h6>
+<h3 id="kpiMat">0</h3>
+</div>
+</div>
 
-        <div class="col-md-6">
-            <canvas id="c1"></canvas>
-        </div>
+<div class="col-md-3">
+<div class="card card-kpi">
+<h6>Participantes</h6>
+<h3 id="kpiPart">0</h3>
+</div>
+</div>
 
-        <div class="col-md-6">
-            <canvas id="c2"></canvas>
-        </div>
+</div>
 
-    </div>
+<div class="row">
 
-    <div class="row mt-3">
+<div class="col-md-6">
+<canvas id="c1"></canvas>
+</div>
 
-        <div class="col-md-6">
-            <canvas id="c3"></canvas>
-        </div>
+<div class="col-md-6">
+<canvas id="c2"></canvas>
+</div>
 
-        <div class="col-md-6">
-            <canvas id="c4"></canvas>
-        </div>
+</div>
 
-    </div>
+<hr class="my-4">
 
-    <input
-        class="form-control my-3"
-        id="bus"
-        placeholder="Buscar..."
-        oninput="filtrar()"
-    >
+<div class="table-responsive">
 
-    <div class="table-responsive">
+<table class="table table-striped table-bordered">
 
-        <table class="table table-striped table-hover">
+<thead class="table-dark">
 
-            <thead class="table-dark">
-                <tr>
-                    <th>OT</th>
-                    <th>Titular</th>
-                    <th>Domicilio</th>
-                    <th>Fecha Reclamo</th>
-                    <th>Fecha Resolución</th>
-                    <th>Costo OT</th>
-                    <th>Cantidad Materiales</th>
-                    <th>Participantes</th>
-                </tr>
-            </thead>
+<tr>
+<th>OT</th>
+<th>Titular</th>
+<th>Domicilio</th>
+<th>Servicio</th>
+<th>Participantes</th>
+<th>Costo OT</th>
+</tr>
 
-            <tbody id="tb"></tbody>
+</thead>
 
-        </table>
+<tbody id="tabla">
 
-    </div>
+</tbody>
+
+</table>
+
+</div>
 
 </div>
 
 <script>
 
-let base = [];
+let base=[];
 
-function calle(d){
+async function read(file){
 
-    return (d || "")
-        .split("CP:")[0]
-        .replace(/[0-9]/g,"")
-        .replace(/,/g,"")
-        .trim();
+    return JSON.parse(
+        await file.text()
+    );
 
 }
 
+function numero(v){
 
-function read(f){
-
-    return new Promise(resolve=>{
-
-        const fr = new FileReader();
-
-        fr.onload = e =>
-            resolve(
-                JSON.parse(e.target.result)
-            );
-
-        fr.readAsText(f);
-
-    });
+    return Number(v||0);
 
 }
 
 async function procesar(){
 
-    const ot =
+    const ot=
         await read(
-            document
-                .getElementById("otFile")
-                .files[0]
+            document.getElementById("otFile").files[0]
         );
 
-    const mt =
+    const mt=
         await read(
-            document
-                .getElementById("matFile")
-                .files[0]
+            document.getElementById("matFile").files[0]
         );
 
-    const map = {};
+    const mapa={};
 
     mt.forEach(m=>{
 
-        const key = String(m.OT || "");
+        const id=
+            String(
+                m.OT || ""
+            ).trim();
 
-        if(!map[key]){
+        if(!mapa[id]){
 
-            map[key] = {
+            mapa[id]={
 
                 costo:0,
-                cantidadMateriales:0,
                 participantes:new Set(),
                 materiales:new Set()
 
@@ -195,14 +212,12 @@ async function procesar(){
 
         }
 
-        map[key].costo +=
-            (+m.COSTO_TOTAL || 0);
-
-        map[key].cantidadMateriales++;
+        mapa[id].costo+=
+            numero(m.COSTO_TOTAL);
 
         if(m.MATERIAL){
 
-            map[key]
+            mapa[id]
                 .materiales
                 .add(m.MATERIAL);
 
@@ -211,27 +226,30 @@ async function procesar(){
         if(m.PARTICIPANTES){
 
             m.PARTICIPANTES
-                .split(";")
-                .forEach(p=>{
+            .split(";")
+            .forEach(p=>{
 
-                    if(p.trim()){
+                if(p.trim()){
 
-                        map[key]
-                            .participantes
-                            .add(p.trim());
+                    mapa[id]
+                     .participantes
+                     .add(p.trim());
 
-                    }
+                }
 
-                });
+            });
 
         }
 
     });
 
-    base = ot.map(o=>{
+    base=
+    ot.map(o=>{
 
-        const info =
-            map[String(o.OT)] || {};
+        const info=
+            mapa[
+                String(o.OT).trim()
+            ] || {};
 
         return {
 
@@ -239,9 +257,6 @@ async function procesar(){
 
             CostoOT:
                 info.costo || 0,
-
-            CantidadMateriales:
-                info.cantidadMateriales || 0,
 
             Participantes:
                 info.participantes
@@ -257,138 +272,42 @@ async function procesar(){
 
     });
 
-    render(mt);
+    cargarKPIs(mt);
+
+    rankingClientes();
+
+    rankingMateriales(mt);
+
+    cargarTabla();
 
 }
 
-}
-    function normalizarTitular(nombre){
+function cargarKPIs(mt){
 
-    return String(nombre || "")
-        .toUpperCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g,"")
-        .replace(/\s+/g," ")
-        .trim();
+    document.getElementById("kpiOT")
+        .innerText=
+        base.length.toLocaleString();
 
-}
-    function claveTitular(nombre){
+    const costo=
+        base.reduce(
+        (a,b)=>a+b.CostoOT,0
+        );
 
-    nombre = normalizarTitular(nombre);
+    document.getElementById("kpiCosto")
+        .innerText=
+        "$"+
+        costo.toLocaleString();
 
-    return nombre
-        .split(" ")
-        .slice(0,3)
-        .join(" ");
-
-}
-
-function render(mt){
-
-    const totalOT =
-        base.length;
-
-    const clientes =
+    document.getElementById("kpiMat")
+        .innerText=
         new Set(
-            base.map(x=>x.Titular)
-        ).size;
-
-    const calles =
-        new Set(
-            base.map(
-                x=>calle(
-                    x.Domicilio
-                )
+            mt.map(
+                x=>x.MATERIAL
             )
         ).size;
 
-    const materiales =
-new Set(
-    mt.map(
-        x=>x.MATERIAL
-    )
-).size;
-
-
-    const costo =
-        base.reduce(
-            (a,b)=>a+b.COSTO_TOTAL,
-            0
-        );
-
-    const promedio =
-        totalOT
-            ? costo/totalOT
-            : 0;
-
-    const conMateriales =
-        base.filter(
-            x=>x.CantidadMateriales>0
-        ).length;
-
-    const sinMateriales =
-        totalOT-conMateriales;
-
-    const cards = [
-
-        ["Total OT",totalOT],
-        ["Clientes Únicos",clientes],
-        ["Calles Únicas",calles],
-        ["Materiales Utilizados",materiales],
-        ["Costo Total","$"+costo.toFixed(0)],
-        ["Costo Promedio","$"+promedio.toFixed(0)],
-        ["OT con Materiales",conMateriales],
-        ["OT sin Materiales",sinMateriales]
-
-    ];
-
-    document.getElementById("kpis").innerHTML =
-        cards.map(i=>`
-        <div class="col-md-3">
-            <div class="card card-kpi">
-                <div class="card-body">
-                    <div>${i[0]}</div>
-                    <div class="kpi">${i[1]}</div>
-                </div>
-            </div>
-        </div>
-        `).join("");
-
-    document.getElementById("tb").innerHTML =
-        base.map(x=>`
-
-        <tr>
-
-            <td>${x.OT}</td>
-
-            <td>${x.Titular || ""}</td>
-
-            <td>${x.Domicilio || ""}</td>
-
-            <td>${x.FechaReclamo || ""}</td>
-
-            <td>${x.FechaResolucion || ""}</td>
-
-            <td>${x.CostoOT.toFixed(0)}</td>
-
-            <td>${x.CantidadMateriales}</td>
-
-            <td>${x.Participantes}</td>
-
-        </tr>
-
-        `).join("");
-
-    rankingClientes(mt);
-    rankingOrigen(mt);
-    rankingMateriales(mt);
-    rankingCalles();
-    evolucionMensual();
-
-}
-    function rankingParticipantes(mt){
-
-    const data = {};
+    const personas=
+        new Set();
 
     mt.forEach(x=>{
 
@@ -399,215 +318,123 @@ new Set(
         .split(";")
         .forEach(p=>{
 
-            p = p.trim();
-
-            if(!p) return;
-
-            data[p] =
-                (data[p] || 0)
-                +
-                (+x.COSTO_TOTAL || 0);
+            personas.add(
+                p.trim()
+            );
 
         });
 
     });
 
-    const top =
-        Object.entries(data)
-        .sort((a,b)=>b[1]-a[1])
-        .slice(0,10);
-
-    graf(
-        "c6",
-        top.map(x=>x[0]),
-        top.map(x=>x[1]),
-        "Top Participantes"
-    );
-}
-
-    function rankingOrigen(mt){
-
-    const data = {};
-
-    mt.forEach(x=>{
-
-        data[x.ORIGEN] =
-            (data[x.ORIGEN] || 0)
-            +
-            (+x.COSTO_TOTAL || 0);
-
-    });
-
-    graf(
-        "c5",
-        Object.keys(data),
-        Object.values(data),
-        "Costo por Tipo de Trabajo"
-    );
+    document
+        .getElementById("kpiPart")
+        .innerText=
+        personas.size;
 
 }
-    
 
 function rankingClientes(){
 
-    const data = {};
+    const data={};
 
     base.forEach(x=>{
 
-        data[x.Titular] =
-            (data[x.Titular]||0)+1;
+        data[x.Titular]=
+        (data[x.Titular]||0)
+        + x.CostoOT;
 
     });
 
-    const top =
+    const top=
         Object.entries(data)
         .sort((a,b)=>b[1]-a[1])
         .slice(0,10);
-
-    graf(
-        "c1",
-        top.map(x=>x[0]),
-        top.map(x=>x[1]),
-        "Top Clientes"
-    );
-
-}
-
-function rankingMateriales(mt){
-
-    const data = {};
-
-    mt.forEach(x=>{
-
-        const mat =
-            x.MATERIAL || "Sin Material";
-
-        data[mat] =
-            (data[mat] || 0)
-            +
-            (+x.COSTO_TOTAL || 0);
-
-    });
-
-    const top =
-        Object.entries(data)
-        .sort((a,b)=>b[1]-a[1])
-        .slice(0,15);
-
-    graf(
-        "c2",
-        top.map(x=>x[0]),
-        top.map(x=>x[1]),
-        "Top Materiales por Costo"
-    );
-
-}
-
-function rankingCalles(){
-
-    const data = {};
-
-    base.forEach(x=>{
-
-        const c =
-            calle(
-                x.Domicilio
-            );
-
-        data[c] =
-            (data[c]||0)+1;
-
-    });
-
-    const top =
-        Object.entries(data)
-        .sort((a,b)=>b[1]-a[1])
-        .slice(0,10);
-
-    graf(
-        "c3",
-        top.map(x=>x[0]),
-        top.map(x=>x[1]),
-        "Ranking Calles"
-    );
-
-}
-
-function evolucionMensual(){
-
-    const data = {};
-
-    base.forEach(x=>{
-
-        const mes =
-            (x.FechaReclamo||"")
-            .substring(0,7);
-
-        data[mes] =
-            (data[mes]||0)+1;
-
-    });
-
-    const meses =
-        Object.keys(data)
-        .sort();
-
-    graf(
-        "c4",
-        meses,
-        meses.map(x=>data[x]),
-        "OT por Mes"
-    );
-
-}
-
-function graf(id,l,d,t){
 
     new Chart(
-        document.getElementById(id),
+        document.getElementById("c1"),
         {
             type:"bar",
             data:{
-                labels:l,
+                labels:top.map(x=>x[0]),
                 datasets:[{
-                    data:d,
-                    backgroundColor:"#00a85a"
+                    label:"Costo",
+                    data:top.map(x=>x[1])
                 }]
-            },
-            options:{
-                responsive:true,
-                plugins:{
-                    legend:{
-                        display:false
-                    },
-                    title:{
-                        display:true,
-                        text:t
-                    }
-                }
             }
         }
     );
 
 }
 
-function filtrar(){
+function rankingMateriales(mt){
 
-    let texto =
-        document
-        .getElementById("bus")
-        .value
-        .toLowerCase();
+    const data={};
 
-    [...document.querySelectorAll("#tb tr")]
-    .forEach(r=>{
+    mt.forEach(x=>{
 
-        r.style.display =
-            r.innerText
-            .toLowerCase()
-            .includes(texto)
-            ? ""
-            : "none";
+        data[x.MATERIAL]=
+        (data[x.MATERIAL]||0)
+        +
+        numero(
+            x.COSTO_TOTAL
+        );
+
+    });
+
+    const top=
+        Object.entries(data)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,10);
+
+    new Chart(
+        document.getElementById("c2"),
+        {
+            type:"bar",
+            data:{
+                labels:top.map(x=>x[0]),
+                datasets:[{
+                    label:"Costo",
+                    data:top.map(x=>x[1])
+                }]
+            }
+        }
+    );
+
+}
+
+function cargarTabla(){
+
+    const tb=
+    document.getElementById("tabla");
+
+    tb.innerHTML="";
+
+    base.forEach(x=>{
+
+        tb.innerHTML+=`
+
+        <tr>
+
+        <td>${x.OT}</td>
+
+        <td>${x.Titular||""}</td>
+
+        <td>${x.Domicilio||""}</td>
+
+        <td>${x.Servicio||""}</td>
+
+        <td>${x.Participantes||""}</td>
+
+        <td>
+        $
+        ${Number(
+          x.CostoOT||0
+        ).toLocaleString()}
+        </td>
+
+        </tr>
+
+        `;
 
     });
 
