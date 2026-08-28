@@ -1,46 +1,42 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Dashboard Ejecutivo CESPAL</title>
+<title>Dashboard Ejecutivo CESPAL V2</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
 :root{
     --verde:#004d2b;
-    --verde2:#0f6b45;
-    --gris:#eef1f4;
-    --blanco:#ffffff;
-    --texto:#1f2937;
-}
-
-*{
-    box-sizing:border-box;
+    --verde-oscuro:#00361f;
+    --gris:#eef2f5;
+    --sombra:0 2px 10px rgba(0,0,0,.08);
 }
 
 body{
+    margin:0;
     background:var(--gris);
     font-family:'Segoe UI',Tahoma,sans-serif;
-    margin:0;
-    color:var(--texto);
 }
 
 .header{
     background:var(--verde);
     color:white;
-    padding:22px 30px;
-    box-shadow:0 3px 10px rgba(0,0,0,.15);
+    padding:20px 30px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
 }
 
 .header h1{
     margin:0;
-    font-size:34px;
+    font-size:36px;
     font-weight:700;
 }
 
@@ -49,93 +45,75 @@ body{
     opacity:.9;
 }
 
-.main-container{
-    padding:20px;
+.wrapper{
+    padding:18px;
 }
 
-.panel{
+.card-panel{
     background:white;
     border-radius:12px;
-    padding:18px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    padding:16px;
+    box-shadow:var(--sombra);
     margin-bottom:20px;
-}
-
-.top-controls{
-    display:grid;
-    grid-template-columns:1fr 1fr 220px;
-    gap:15px;
-}
-
-.btn-procesar{
-    background:var(--verde2);
-    border:none;
-    color:white;
-    font-weight:600;
-}
-
-.btn-procesar:hover{
-    background:#095a39;
-    color:white;
 }
 
 .kpi-card{
     background:white;
     border-radius:12px;
-    padding:20px;
     text-align:center;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    padding:18px;
+    box-shadow:var(--sombra);
     height:100%;
 }
 
-.kpi-card h6{
-    margin-bottom:10px;
-    text-transform:uppercase;
+.kpi-title{
     font-size:13px;
+    font-weight:600;
+    color:#666;
+    text-transform:uppercase;
     letter-spacing:.8px;
 }
 
-.kpi-card h3{
-    margin:0;
-    font-size:34px;
+.kpi-value{
+    font-size:36px;
     font-weight:700;
 }
 
-.kpi-ot h3{
+.kpi-blue{
     color:#0d6efd;
 }
 
-.kpi-costo h3{
+.kpi-green{
     color:#198754;
 }
 
-.kpi-promedio h3{
+.kpi-cyan{
     color:#0dcaf0;
 }
 
-.kpi-clientes h3{
-    color:#6610f2;
+.kpi-purple{
+    color:#6f42c1;
 }
 
-.kpi-materiales h3{
+.kpi-orange{
     color:#fd7e14;
 }
 
-.kpi-participantes h3{
+.kpi-red{
     color:#dc3545;
 }
 
 .chart-card{
     background:white;
     border-radius:12px;
-    padding:18px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    padding:15px;
+    box-shadow:var(--sombra);
     margin-bottom:20px;
 }
 
-.chart-card h5{
-    margin-bottom:15px;
+.chart-title{
     font-weight:600;
+    margin-bottom:15px;
 }
 
 .chart-container{
@@ -143,19 +121,11 @@ body{
     height:420px;
 }
 
-.search-box{
-    background:white;
-    border-radius:12px;
-    padding:15px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
-    margin-bottom:20px;
-}
-
 .table-card{
     background:white;
     border-radius:12px;
     padding:15px;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
+    box-shadow:var(--sombra);
 }
 
 .table thead{
@@ -170,39 +140,47 @@ body{
 }
 
 .table tbody tr:hover{
-    background:#f4f6f8;
+    background:#f8f9fa;
 }
 
-.badge-total{
-    background:#198754;
+.btn-procesar{
+    background:var(--verde);
+    border:none;
+}
+
+.btn-procesar:hover{
+    background:var(--verde-oscuro);
+}
+
+.total-badge{
+    background:var(--verde);
     color:white;
-    font-size:12px;
+    padding:10px;
+    border-radius:8px;
+    text-align:center;
+    font-weight:600;
 }
 
-.footer-space{
-    height:30px;
+.form-label{
+    font-weight:600;
 }
 
-@media (max-width:1200px){
-
-    .top-controls{
-        grid-template-columns:1fr;
-    }
-
-}
-
-@media (max-width:768px){
-
-    .header h1{
-        font-size:26px;
-    }
-
-    .kpi-card h3{
-        font-size:24px;
-    }
+@media(max-width:992px){
 
     .chart-container{
         height:320px;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .header h1{
+        font-size:28px;
+    }
+
+    .kpi-value{
+        font-size:24px;
     }
 
 }
@@ -214,44 +192,53 @@ body{
 <body>
 
 <div class="header">
+
     <h1>Dashboard Ejecutivo CESPAL</h1>
-    <p>Análisis Integrado de OT y Materiales</p>
+
+    <p>
+        Integración OT + Materiales + Costos + Participantes
+    </p>
+
 </div>
 
-<div class="main-container">
+<div class="wrapper">
 
-    <div class="panel">
+    <div class="card-panel">
 
-        <div class="top-controls">
+        <div class="row">
 
-            <div>
-                <label class="form-label fw-bold">
+            <div class="col-lg-5">
+
+                <label class="form-label">
                     Archivo OT
                 </label>
 
                 <input
-                    type="file"
                     id="otFile"
+                    type="file"
                     class="form-control"
                     accept=".json">
+
             </div>
 
-            <div>
-                <label class="form-label fw-bold">
+            <div class="col-lg-5">
+
+                <label class="form-label">
                     Archivo Materiales
                 </label>
 
                 <input
-                    type="file"
                     id="matFile"
+                    type="file"
                     class="form-control"
                     accept=".json">
+
             </div>
 
-            <div class="d-flex align-items-end">
+            <div class="col-lg-2 d-flex align-items-end">
 
                 <button
-                    class="btn btn-procesar w-100"
+                    class="btn btn-procesar btn-success w-100"
                     onclick="procesarDatos()">
 
                     Procesar Datos
@@ -264,48 +251,126 @@ body{
 
     </div>
 
-    <div class="row g-4 mb-4">
+    <div class="row g-3 mb-4">
 
-        <div class="col-lg-2 col-md-4">
-            <div class="kpi-card kpi-ot">
-                <h6>OT Totales</h6>
-                <h3 id="kpiOT">0</h3>
+        <div class="col-xl-2 col-md-4">
+
+            <div class="kpi-card">
+
+                <div class="kpi-title">
+                    OT Totales
+                </div>
+
+                <div
+                    id="kpiOT"
+                    class="kpi-value kpi-blue">
+
+                    0
+
+                </div>
+
             </div>
+
         </div>
 
-        <div class="col-lg-2 col-md-4">
-            <div class="kpi-card kpi-costo">
-                <h6>Costo Total</h6>
-                <h3 id="kpiCosto">$0</h3>
+        <div class="col-xl-2 col-md-4">
+
+            <div class="kpi-card">
+
+                <div class="kpi-title">
+                    Costo Total
+                </div>
+
+                <div
+                    id="kpiCosto"
+                    class="kpi-value kpi-green">
+
+                    $0
+
+                </div>
+
             </div>
+
         </div>
 
-        <div class="col-lg-2 col-md-4">
-            <div class="kpi-card kpi-promedio">
-                <h6>Costo Promedio</h6>
-                <h3 id="kpiPromedio">$0</h3>
+        <div class="col-xl-2 col-md-4">
+
+            <div class="kpi-card">
+
+                <div class="kpi-title">
+                    Costo Promedio
+                </div>
+
+                <div
+                    id="kpiPromedio"
+                    class="kpi-value kpi-cyan">
+
+                    $0
+
+                </div>
+
             </div>
+
         </div>
 
-        <div class="col-lg-2 col-md-4">
-            <div class="kpi-card kpi-clientes">
-                <h6>Clientes</h6>
-                <h3 id="kpiClientes">0</h3>
+        <div class="col-xl-2 col-md-4">
+
+            <div class="kpi-card">
+
+                <div class="kpi-title">
+                    Clientes
+                </div>
+
+                <div
+                    id="kpiClientes"
+                    class="kpi-value kpi-purple">
+
+                    0
+
+                </div>
+
             </div>
+
         </div>
 
-        <div class="col-lg-2 col-md-4">
-            <div class="kpi-card kpi-materiales">
-                <h6>Materiales</h6>
-                <h3 id="kpiMateriales">0</h3>
+        <div class="col-xl-2 col-md-4">
+
+            <div class="kpi-card">
+
+                <div class="kpi-title">
+                    Materiales
+                </div>
+
+                <div
+                    id="kpiMateriales"
+                    class="kpi-value kpi-orange">
+
+                    0
+
+                </div>
+
             </div>
+
         </div>
 
-        <div class="col-lg-2 col-md-4">
-            <div class="kpi-card kpi-participantes">
-                <h6>Participantes</h6>
-                <h3 id="kpiParticipantes">0</h3>
+        <div class="col-xl-2 col-md-4">
+
+            <div class="kpi-card">
+
+                <div class="kpi-title">
+                    Participantes
+                </div>
+
+                <div
+                    id="kpiParticipantes"
+                    class="kpi-value kpi-red">
+
+                    0
+
+                </div>
+
             </div>
+
         </div>
 
     </div>
@@ -313,21 +378,39 @@ body{
     <div class="row">
 
         <div class="col-xl-6">
+
             <div class="chart-card">
-                <h5>Top 10 Clientes por Costo</h5>
+
+                <div class="chart-title">
+                    Top 10 Clientes por Costo
+                </div>
+
                 <div class="chart-container">
+
                     <canvas id="chartClientes"></canvas>
+
                 </div>
+
             </div>
+
         </div>
 
         <div class="col-xl-6">
+
             <div class="chart-card">
-                <h5>Top 10 Materiales por Costo</h5>
+
+                <div class="chart-title">
+                    Top 10 Materiales por Costo
+                </div>
+
                 <div class="chart-container">
+
                     <canvas id="chartMateriales"></canvas>
+
                 </div>
+
             </div>
+
         </div>
 
     </div>
@@ -335,21 +418,39 @@ body{
     <div class="row">
 
         <div class="col-xl-6">
+
             <div class="chart-card">
-                <h5>Top Participantes</h5>
+
+                <div class="chart-title">
+                    Top Participantes
+                </div>
+
                 <div class="chart-container">
+
                     <canvas id="chartParticipantes"></canvas>
+
                 </div>
+
             </div>
+
         </div>
 
         <div class="col-xl-6">
+
             <div class="chart-card">
-                <h5>Costos por Origen</h5>
-                <div class="chart-container">
-                    <canvas id="chartOrigen"></canvas>
+
+                <div class="chart-title">
+                    Costos por Origen
                 </div>
+
+                <div class="chart-container">
+
+                    <canvas id="chartOrigen"></canvas>
+
+                </div>
+
             </div>
+
         </div>
 
     </div>
@@ -357,40 +458,58 @@ body{
     <div class="row">
 
         <div class="col-xl-6">
+
             <div class="chart-card">
-                <h5>Evolución Mensual</h5>
-                <div class="chart-container">
-                    <canvas id="chartMensual"></canvas>
+
+                <div class="chart-title">
+                    Evolución Mensual
                 </div>
+
+                <div class="chart-container">
+
+                    <canvas id="chartMensual"></canvas>
+
+                </div>
+
             </div>
+
         </div>
 
         <div class="col-xl-6">
+
             <div class="chart-card">
-                <h5>Pareto Materiales 80/20</h5>
-                <div class="chart-container">
-                    <canvas id="chartPareto"></canvas>
+
+                <div class="chart-title">
+                    Pareto Materiales 80/20
                 </div>
+
+                <div class="chart-container">
+
+                    <canvas id="chartPareto"></canvas>
+
+                </div>
+
             </div>
+
         </div>
 
     </div>
 
-    <div class="search-box">
+    <div class="card-panel">
 
         <div class="row">
 
-            <div class="col-md-6">
+            <div class="col-lg-6">
 
                 <input
                     id="buscar"
                     type="text"
                     class="form-control"
-                    placeholder="Buscar OT, Titular, Domicilio o Participante...">
+                    placeholder="Buscar OT, Titular, Domicilio o Participante">
 
             </div>
 
-            <div class="col-md-3">
+            <div class="col-lg-3">
 
                 <button
                     class="btn btn-success w-100"
@@ -402,15 +521,15 @@ body{
 
             </div>
 
-            <div class="col-md-3">
+            <div class="col-lg-3">
 
-                <span
+                <div
                     id="totalRegistros"
-                    class="badge badge-total p-3 w-100">
+                    class="total-badge">
 
                     0 Registros
 
-                </span>
+                </div>
 
             </div>
 
@@ -424,47 +543,21 @@ body{
 
             <table
                 id="tablaDatos"
-                class="table table-hover table-striped">
+                class="table table-striped table-hover">
 
                 <thead>
 
                 <tr>
 
-                    <th onclick="ordenarTabla('OT')">
-                        OT
-                    </th>
-
-                    <th onclick="ordenarTabla('Titular')">
-                        Titular
-                    </th>
-
-                    <th onclick="ordenarTabla('Domicilio')">
-                        Domicilio
-                    </th>
-
-                    <th onclick="ordenarTabla('Fecha Reclamo')">
-                        Fecha Reclamo
-                    </th>
-
-                    <th onclick="ordenarTabla('Fecha Resolución')">
-                        Fecha Resolución
-                    </th>
-
-                    <th onclick="ordenarTabla('Servicio')">
-                        Servicio
-                    </th>
-
-                    <th onclick="ordenarTabla('Participantes')">
-                        Participantes
-                    </th>
-
-                    <th onclick="ordenarTabla('CantidadMateriales')">
-                        Cant. Materiales
-                    </th>
-
-                    <th onclick="ordenarTabla('CostoOT')">
-                        Costo OT
-                    </th>
+                    <th onclick="ordenarTabla('OT')">OT</th>
+                    <th onclick="ordenarTabla('Titular')">Titular</th>
+                    <th onclick="ordenarTabla('Domicilio')">Domicilio</th>
+                    <th onclick="ordenarTabla('FechaReclamo')">Fecha Reclamo</th>
+                    <th onclick="ordenarTabla('FechaResolucion')">Fecha Resolución</th>
+                    <th onclick="ordenarTabla('Servicio')">Servicio</th>
+                    <th onclick="ordenarTabla('Participantes')">Participantes</th>
+                    <th onclick="ordenarTabla('CantidadMateriales')">Cant. Materiales</th>
+                    <th onclick="ordenarTabla('CostoOT')">Costo OT</th>
 
                 </tr>
 
@@ -482,22 +575,22 @@ body{
 
 </div>
 
-<div class="footer-space"></div>
-
 <script>
 
 let baseDatos = [];
 let datosFiltrados = [];
+
 let sentidoOrden = 1;
 
-let chartClientes = null;
-let chartMateriales = null;
-let chartParticipantes = null;
-let chartOrigen = null;
-let chartMensual = null;
-let chartPareto = null;
+let chartClientes;
+let chartMateriales;
+let chartParticipantes;
+let chartOrigen;
+let chartMensual;
+let chartPareto;
 
-function moneda(v){
+function moneda(valor){
+
     return new Intl.NumberFormat(
         'es-AR',
         {
@@ -505,24 +598,45 @@ function moneda(v){
             currency:'ARS',
             maximumFractionDigits:0
         }
-    ).format(v || 0);
+    ).format(valor || 0);
+
 }
 
-function numero(v){
-    if(v === null || v === undefined) return 0;
+function numero(valor){
 
-    if(typeof v === "number") return v;
+    if(valor === null || valor === undefined)
+        return 0;
+
+    if(typeof valor === 'number')
+        return valor;
 
     return Number(
-        String(v)
+        String(valor)
         .replace(/\$/g,'')
         .replace(/\./g,'')
         .replace(/,/g,'.')
     ) || 0;
+
 }
 
 async function leerJSON(file){
-    return JSON.parse(await file.text());
+
+    return JSON.parse(
+        await file.text()
+    );
+
+}
+
+function normalizarParticipantes(texto){
+
+    if(!texto) return [];
+
+    return String(texto)
+        .split(",")
+        .map(p=>p.trim())
+        .map(p=>p.replace(/^\d+\s*-\s*/,''))
+        .filter(Boolean);
+
 }
 
 function destruirGraficos(){
@@ -534,9 +648,10 @@ function destruirGraficos(){
         chartOrigen,
         chartMensual,
         chartPareto
-    ].forEach(c=>{
+    ].forEach(g=>{
 
-        if(c) c.destroy();
+        if(g)
+            g.destroy();
 
     });
 
@@ -544,101 +659,104 @@ function destruirGraficos(){
 
 async function procesarDatos(){
 
-    const otFile=document.getElementById("otFile").files[0];
-    const matFile=document.getElementById("matFile").files[0];
+    const otFile =
+        document.getElementById("otFile").files[0];
+
+    const matFile =
+        document.getElementById("matFile").files[0];
 
     if(!otFile || !matFile){
 
-        alert("Seleccione ambos archivos JSON");
+        alert(
+            "Seleccione ambos archivos JSON"
+        );
+
         return;
     }
 
-    const otData=await leerJSON(otFile);
-    const matData=await leerJSON(matFile);
+    destruirGraficos();
 
-    const mapa={};
+    const otData =
+        await leerJSON(otFile);
+
+    const matData =
+        await leerJSON(matFile);
+
+    const mapaOT = {};
 
     matData.forEach(m=>{
 
-        const ot=String(m.OT || "").trim();
+        const ot =
+            String(m.OT || '').trim();
 
         if(!ot) return;
 
-        if(!mapa[ot]){
+        if(!mapaOT[ot]){
 
-            mapa[ot]={
+            mapaOT[ot] = {
+
                 costo:0,
-                materiales:[],
-                participantes:new Set(),
-                cantidad:0,
-                registros:[]
+
+                cantidadMateriales:0,
+
+                materiales:new Set(),
+
+                participantes:new Set()
+
             };
+
         }
 
-        mapa[ot].cantidad++;
+        mapaOT[ot].cantidadMateriales++;
 
-        mapa[ot].registros.push(m);
-
-        mapa[ot].costo +=
+        mapaOT[ot].costo +=
             numero(
                 m.COSTO_TOTAL ||
-                m.Importe ||
                 m.Costo ||
-                0
+                m.Importe
             );
 
         if(m.MATERIAL){
 
-            mapa[ot].materiales.push(
-                String(m.MATERIAL)
-            );
+            mapaOT[ot]
+            .materiales
+            .add(m.MATERIAL);
 
         }
 
-        const partes=
-            String(
-                m.PARTICIPANTES ||
-                m.Participantes ||
-                ""
-            );
-
-        partes
-        .split(";")
+        normalizarParticipantes(
+            m.PARTICIPANTES ||
+            m.Participantes
+        )
         .forEach(p=>{
 
-            p=p.trim();
-
-            if(p){
-
-                mapa[ot]
-                .participantes
-                .add(p);
-
-            }
+            mapaOT[ot]
+            .participantes
+            .add(p);
 
         });
 
     });
 
-    baseDatos = otData.map(o=>{
+    baseDatos = otData.map(ot=>{
 
-        const ot=
+        const id =
             String(
-                o.OT || ""
+                ot.OT || ''
             ).trim();
 
         const aux =
-            mapa[ot] || {};
+            mapaOT[id] || {};
 
         return {
 
-            ...o,
+            ...ot,
 
             CostoOT:
                 aux.costo || 0,
 
             CantidadMateriales:
-                aux.cantidad || 0,
+                aux.cantidadMateriales || 0,
 
             Participantes:
                 aux.participantes
@@ -649,11 +767,11 @@ async function procesarDatos(){
 
     });
 
-    datosFiltrados=[...baseDatos];
+    datosFiltrados = [...baseDatos];
 
     cargarKPIs(matData);
 
-    cargarTabla(baseDatos);
+    cargarTabla(datosFiltrados);
 
     crearClientes();
 
@@ -661,66 +779,48 @@ async function procesarDatos(){
 
     crearParticipantes(matData);
 
-    crearOrigen();
-
-    crearMensual();
-
-    crearPareto(matData);
-
 }
+    function cargarKPIs(materiales){
 
-function cargarKPIs(materiales){
-
-    const costoTotal=
+    const costoTotal =
         baseDatos.reduce(
             (a,b)=>a+(b.CostoOT||0),
             0
         );
 
-    const clientes=
+    const clientes =
         new Set(
             baseDatos.map(
                 x=>x.Titular
-            )
+            ).filter(Boolean)
         );
 
-    const materialesSet=
+    const materialesSet =
         new Set(
-            materiales.map(
-                m=>
-                m.MATERIAL ||
-                "SIN MATERIAL"
-            )
+            materiales
+            .map(x=>x.MATERIAL)
+            .filter(Boolean)
         );
 
-    const participantes=
+    const participantes =
         new Set();
 
     materiales.forEach(m=>{
 
-        const texto=
-            String(
-                m.PARTICIPANTES || ""
-            );
-
-        texto
-        .split(";")
+        normalizarParticipantes(
+            m.PARTICIPANTES ||
+            m.Participantes
+        )
         .forEach(p=>{
 
-            p=p.trim();
-
-            if(p){
-
-                participantes.add(p);
-
-            }
+            participantes.add(p);
 
         });
 
     });
 
     document.getElementById("kpiOT").innerText =
-        baseDatos.length.toLocaleString();
+        baseDatos.length.toLocaleString('es-AR');
 
     document.getElementById("kpiCosto").innerText =
         moneda(costoTotal);
@@ -739,32 +839,30 @@ function cargarKPIs(materiales){
 
     document.getElementById("kpiParticipantes").innerText =
         participantes.size;
-
 }
 
 function crearClientes(){
 
-    destruirGraficos();
-
-    const data={};
+    const data = {};
 
     baseDatos.forEach(r=>{
 
-        const cliente=
-            r.Titular || "SIN CLIENTE";
+        const nombre =
+            r.Titular ||
+            "SIN TITULAR";
 
-        data[cliente]=
-            (data[cliente]||0)
+        data[nombre] =
+            (data[nombre]||0)
             + r.CostoOT;
 
     });
 
-    const top=
+    const top =
         Object.entries(data)
         .sort((a,b)=>b[1]-a[1])
         .slice(0,10);
 
-    chartClientes=
+    chartClientes =
         new Chart(
             document.getElementById("chartClientes"),
             {
@@ -783,33 +881,36 @@ function crearClientes(){
                 }
             }
         );
+
 }
 
-function crearMateriales(materiales){
+function crearMateriales(matData){
 
-    const data={};
+    const data = {};
 
-    materiales.forEach(m=>{
+    matData.forEach(m=>{
 
-        const material=
+        const material =
             m.MATERIAL ||
             "SIN MATERIAL";
 
-        data[material]=
+        data[material] =
             (data[material]||0)
-            + numero(
+            +
+            numero(
                 m.COSTO_TOTAL ||
+                m.Costo ||
                 m.Importe
             );
 
     });
 
-    const top=
-    Object.entries(data)
-    .sort((a,b)=>b[1]-a[1])
-    .slice(0,10);
+    const top =
+        Object.entries(data)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,10);
 
-    chartMateriales=
+    chartMateriales =
     new Chart(
         document.getElementById("chartMateriales"),
         {
@@ -822,9 +923,9 @@ function crearMateriales(materiales){
                 }]
             },
             options:{
-                indexAxis:'y',
                 responsive:true,
                 maintainAspectRatio:false,
+                indexAxis:'y',
                 plugins:{
                     legend:{
                         display:false
@@ -833,38 +934,25 @@ function crearMateriales(materiales){
             }
         }
     );
-
 }
 
-function crearParticipantes(materiales){
+function crearParticipantes(matData){
 
     const data = {};
 
-    materiales.forEach(m=>{
+    matData.forEach(m=>{
 
-        let texto =
-            String(
-                m.PARTICIPANTES ||
-                m.Participantes ||
-                ""
-            );
+        normalizarParticipantes(
+            m.PARTICIPANTES ||
+            m.Participantes
+        )
+        .forEach(nombre=>{
 
-        if(!texto) return;
+            data[nombre] =
+                (data[nombre]||0)
+                + 1;
 
-        texto
-            .split(",")
-            .forEach(p=>{
-
-                p = p.trim();
-
-                p = p.replace(/^\d+\s*-\s*/,"");
-
-                if(!p) return;
-
-                data[p] =
-                    (data[p] || 0) + 1;
-
-            });
+        });
 
     });
 
@@ -873,20 +961,17 @@ function crearParticipantes(materiales){
         .sort((a,b)=>b[1]-a[1])
         .slice(0,15);
 
-    if(chartParticipantes)
-        chartParticipantes.destroy();
-
     chartParticipantes =
         new Chart(
             document.getElementById("chartParticipantes"),
             {
-                type:"bar",
+                type:'bar',
                 data:{
                     labels:top.map(x=>x[0]),
                     datasets:[{
-                        label:"Participaciones",
+                        label:'OT Participadas',
                         data:top.map(x=>x[1]),
-                        backgroundColor:"#dc3545"
+                        backgroundColor:'#dc3545'
                     }]
                 },
                 options:{
@@ -900,31 +985,31 @@ function crearParticipantes(materiales){
                 }
             }
         );
-
 }
 
 function crearOrigen(){
 
-    const data={};
+    const data = {};
 
     baseDatos.forEach(x=>{
 
-        const origen=
+        const origen =
             x.Origen ||
             x.ORIGEN ||
-            "SIN ORIGEN";
+            x.Tipo ||
+            "Sin Origen";
 
-        data[origen]=
+        data[origen] =
             (data[origen]||0)
             + x.CostoOT;
 
     });
 
-    chartOrigen=
+    chartOrigen =
         new Chart(
             document.getElementById("chartOrigen"),
             {
-                type:'pie',
+                type:'doughnut',
                 data:{
                     labels:Object.keys(data),
                     datasets:[{
@@ -941,95 +1026,93 @@ function crearOrigen(){
 
 function crearMensual(){
 
-    const data={};
+    const data = {};
 
     baseDatos.forEach(r=>{
 
-        const fecha=
-            r["Fecha Reclamo"] ||
+        let fecha =
             r.FechaReclamo ||
+            r["Fecha Reclamo"] ||
             r.FECHA ||
             "";
 
-        let clave="Sin Fecha";
+        if(!fecha) return;
 
-        if(fecha){
+        const d =
+            new Date(fecha);
 
-            try{
+        if(isNaN(d))
+            return;
 
-                const d=
-                    new Date(fecha);
+        const clave =
+            d.getFullYear()
+            + "-"
+            +
+            String(
+                d.getMonth()+1
+            ).padStart(2,'0');
 
-                clave=
-                    d.getFullYear()
-                    + "-"
-                    + String(
-                        d.getMonth()+1
-                    ).padStart(2,'0');
-
-            }catch{}
-
-        }
-
-        data[clave]=
-        (data[clave]||0)
-        + r.CostoOT;
+        data[clave] =
+            (data[clave]||0)
+            + r.CostoOT;
 
     });
 
-    const meses=
-    Object.keys(data)
-    .sort();
+    const meses =
+        Object.keys(data)
+        .sort();
 
-    chartMensual=
-    new Chart(
-        document.getElementById("chartMensual"),
-        {
-            type:'line',
-            data:{
-                labels:meses,
-                datasets:[{
-                    data:meses.map(
-                        m=>data[m]
-                    ),
-                    borderColor:'#0d6efd',
-                    fill:false
-                }]
-            },
-            options:{
-                responsive:true,
-                maintainAspectRatio:false
+    chartMensual =
+        new Chart(
+            document.getElementById("chartMensual"),
+            {
+                type:'line',
+                data:{
+                    labels:meses,
+                    datasets:[{
+                        label:'Costo Mensual',
+                        data:meses.map(x=>data[x]),
+                        borderColor:'#0d6efd',
+                        backgroundColor:'#0d6efd',
+                        tension:.3
+                    }]
+                },
+                options:{
+                    responsive:true,
+                    maintainAspectRatio:false
+                }
             }
-        }
-    );
+        );
 
 }
 
-function crearPareto(materiales){
+function crearPareto(matData){
 
-    const data={};
+    const data = {};
 
-    materiales.forEach(m=>{
+    matData.forEach(m=>{
 
-        const material=
+        const material =
             m.MATERIAL ||
             "SIN MATERIAL";
 
-        data[material]=
+        data[material] =
             (data[material]||0)
-            + numero(
+            +
+            numero(
                 m.COSTO_TOTAL ||
+                m.Costo ||
                 m.Importe
             );
 
     });
 
-    const orden=
+    const orden =
         Object.entries(data)
         .sort((a,b)=>b[1]-a[1])
         .slice(0,20);
 
-    chartPareto=
+    chartPareto =
         new Chart(
             document.getElementById("chartPareto"),
             {
@@ -1039,7 +1122,7 @@ function crearPareto(materiales){
                     datasets:[{
                         label:'Costo',
                         data:orden.map(x=>x[1]),
-                        backgroundColor:'#6610f2'
+                        backgroundColor:'#6f42c1'
                     }]
                 },
                 options:{
@@ -1052,12 +1135,10 @@ function crearPareto(materiales){
 
 function cargarTabla(datos){
 
-    const body=
-    document.getElementById(
-        "tablaBody"
-    );
+    const body =
+        document.getElementById("tablaBody");
 
-    body.innerHTML="";
+    body.innerHTML = '';
 
     datos.forEach(x=>{
 
@@ -1066,8 +1147,8 @@ function cargarTabla(datos){
             <td>${x.OT||''}</td>
             <td>${x.Titular||''}</td>
             <td>${x.Domicilio||''}</td>
-            <td>${x["Fecha Reclamo"]||x.FechaReclamo||''}</td>
-            <td>${x["Fecha Resolución"]||x.FechaResolucion||''}</td>
+            <td>${x.FechaReclamo||x["Fecha Reclamo"]||''}</td>
+            <td>${x.FechaResolucion||x["Fecha Resolución"]||''}</td>
             <td>${x.Servicio||''}</td>
             <td>${x.Participantes||''}</td>
             <td>${x.CantidadMateriales||0}</td>
@@ -1075,27 +1156,23 @@ function cargarTabla(datos){
         </tr>`;
     });
 
-    document.getElementById(
-        "totalRegistros"
-    ).innerText=
-        datos.length +
-        " Registros";
+    document.getElementById("totalRegistros").innerText =
+        datos.length + " Registros";
 }
 
 document
 .getElementById("buscar")
 .addEventListener("keyup",function(){
 
-    const txt=
-        this.value
-        .toLowerCase();
+    const texto =
+        this.value.toLowerCase();
 
-    datosFiltrados=
+    datosFiltrados =
         baseDatos.filter(r=>{
 
             return JSON.stringify(r)
-                .toLowerCase()
-                .includes(txt);
+            .toLowerCase()
+            .includes(texto);
 
         });
 
@@ -1107,84 +1184,107 @@ function ordenarTabla(campo){
 
     datosFiltrados.sort((a,b)=>{
 
-        const va=
-            String(
-                a[campo]||''
-            );
+        if(typeof a[campo] === 'number'){
 
-        const vb=
-            String(
-                b[campo]||''
-            );
+            return (
+                a[campo]-b[campo]
+            ) * sentidoOrden;
 
-        return va.localeCompare(vb)
-            * sentidoOrden;
+        }
+
+        return String(a[campo]||'')
+            .localeCompare(
+                String(b[campo]||'')
+            ) * sentidoOrden;
 
     });
 
-    sentidoOrden*=-1;
+    sentidoOrden *= -1;
 
     cargarTabla(datosFiltrados);
-
 }
 
 function exportarCSV(){
 
-    let csv='';
+    let csv = '';
 
-    const filas=
-    document.querySelectorAll(
-        '#tablaDatos tr'
-    );
+    document
+    .querySelectorAll('#tablaDatos tr')
+    .forEach(row=>{
 
-    filas.forEach(row=>{
+        const cols =
+            row.querySelectorAll(
+                'td,th'
+            );
 
-        const cols=
-        row.querySelectorAll(
-            'td,th'
-        );
+        const fila = [];
 
-        const arr=[];
+        cols.forEach(col=>{
 
-        cols.forEach(c=>{
-
-            arr.push(
+            fila.push(
                 '"' +
-                c.innerText
-                .replaceAll('"','')
+                col.innerText.replaceAll('"','')
                 + '"'
             );
 
         });
 
         csv +=
-        arr.join(';')
-        + '\n';
+            fila.join(';')
+            + '\n';
 
     });
 
-    const blob=
+    const blob =
         new Blob(
             [csv],
             {
-                type:
-                'text/csv;charset=utf-8;'
+                type:'text/csv;charset=utf-8'
             }
         );
 
-    const url=
+    const url =
         URL.createObjectURL(blob);
 
-    const a=
+    const a =
         document.createElement('a');
 
-    a.href=url;
-    a.download='dashboard_cespal.csv';
+    a.href = url;
+    a.download =
+        'dashboard_cespal.csv';
+
     a.click();
 
     URL.revokeObjectURL(url);
 
 }
+
+crearOrigen = crearOrigen;
+crearMensual = crearMensual;
+crearPareto = crearPareto;
+
+async function procesarDatosOriginal(){
+
+}
+
+const procesarDatosAnterior = procesarDatos;
+
+procesarDatos = async function(){
+
+    await procesarDatosAnterior();
+
+    const matFile =
+        document.getElementById("matFile")
+        .files[0];
+
+    const matData =
+        await leerJSON(matFile);
+
+    crearOrigen();
+    crearMensual();
+    crearPareto(matData);
+
+};
 
 </script>
 
