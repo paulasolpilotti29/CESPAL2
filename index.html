@@ -781,9 +781,11 @@ async function procesarDatos(){
 
     crearClientes();
 
-    crearMateriales(matData);
+crearMateriales(matData);
 
-    crearParticipantes(matData);
+crearParticipantes(matData);
+
+crearOrigen(matData);
 
 }
     function cargarKPIs(materiales){
@@ -993,23 +995,31 @@ function crearParticipantes(matData){
         );
 }
 
-function crearOrigen(){
+function crearOrigen(matData){
 
     const data = {};
 
-    baseDatos.forEach(x=>{
+    matData.forEach(m=>{
 
         const origen =
-            x.Origen ||
-            x.ORIGEN ||
-            x.Tipo ||
-            "Sin Origen";
+            m.ORIGEN ||
+            "SIN ORIGEN";
+
+        const costo =
+            numero(
+                m.COSTO_TOTAL ||
+                m.Costo ||
+                0
+            );
 
         data[origen] =
-            (data[origen]||0)
-            + x.CostoOT;
+            (data[origen] || 0)
+            + costo;
 
     });
+
+    if(chartOrigen)
+        chartOrigen.destroy();
 
     chartOrigen =
         new Chart(
@@ -1028,6 +1038,7 @@ function crearOrigen(){
                 }
             }
         );
+
 }
 
 function crearMensual(){
@@ -1286,9 +1297,13 @@ procesarDatos = async function(){
     const matData =
         await leerJSON(matFile);
 
-    crearOrigen();
-    crearMensual();
-    crearPareto(matData);
+    crearClientes();
+
+crearMateriales(matData);
+
+crearParticipantes(matData);
+
+crearOrigen(matData);
 
 };
 
