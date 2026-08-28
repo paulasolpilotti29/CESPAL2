@@ -632,9 +632,13 @@ function normalizarParticipantes(texto){
     if(!texto) return [];
 
     return String(texto)
-        .split(",")
-        .map(p=>p.trim())
-        .map(p=>p.replace(/^\d+\s*-\s*/,''))
+
+        .split(/[;,]/)
+
+        .map(p => p.trim())
+
+        .map(p => p.replace(/^\d+\s*-\s*/,''))
+
         .filter(Boolean);
 
 }
@@ -759,9 +763,11 @@ async function procesarDatos(){
                 aux.cantidadMateriales || 0,
 
             Participantes:
-                aux.participantes
-                ? [...aux.participantes].join(", ")
-                : ""
+    aux.participantes
+    ? [...aux.participantes]
+        .map(x=>x.replace(/^\d+\s*-\s*/,''))
+        .join(", ")
+    : ""
 
         };
 
