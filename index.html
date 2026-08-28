@@ -42,7 +42,10 @@ canvas{
 </head>
 
 <body>
-
+<div class="col-md-6">
+    <canvas id="c5"></canvas>
+    <canvas id="c6"></canvas>
+</div>
 <div class="top">
     <h2>Dashboard Ejecutivo</h2>
 </div>
@@ -177,50 +180,49 @@ async function procesar(){
 
     mt.forEach(m=>{
 
-      const key =
-    claveTitular(
-        m.Titular
-    );
+      
+mt.forEach(m=>{
 
-        if(!map[key]){
+    const key =
+        String(m.OT || "");
 
-            map[key] = {
+    if(!map[key]){
 
-                costo:0,
-                cant:0,
-                participantes:new Set()
+        map[key] = {
+            costo:0,
+            cant:0,
+            participantes:new Set()
+        };
 
-            };
+    }
 
-        }
+    map[key].costo +=
+        (+m.COSTO_TOTAL || 0);
 
-        map[key].costo +=
-            (+m.Importe || 0);
+    map[key].cant++;
 
-        map[key].cant++;
+    if(m.PARTICIPANTES){
 
-        if(Array.isArray(m.Participantes)){
+        m.PARTICIPANTES
+            .split(";")
+            .forEach(p=>{
 
-            m.Participantes.forEach(p=>{
-
-                map[key]
-                .participantes
-                .add(p);
+                if(p.trim())
+                    map[key]
+                    .participantes
+                    .add(p.trim());
 
             });
 
-        }
+    }
 
-    });
+});
 
+     
     base = ot.map(o=>{
 
-     const info =
-    map[
-        claveTitular(
-            o.Titular
-        )
-    ];
+    const info =
+    map[String(o.OT)];
 
         return {
 
@@ -308,15 +310,16 @@ function render(mt){
         ).size;
 
     const materiales =
-        new Set(
-            mt.map(
-                x=>x.Material
-            )
-        ).size;
+new Set(
+    mt.map(
+        x=>x.MATERIAL
+    )
+).size;
+
 
     const costo =
         base.reduce(
-            (a,b)=>a+b.CostoOT,
+            (a,b)=>a+b.COSTO_TOTAL,
             0
         );
 
@@ -384,11 +387,73 @@ function render(mt){
         `).join("");
 
     rankingClientes(mt);
+    rankingOrigen(mt);
     rankingMateriales(mt);
     rankingCalles();
     evolucionMensual();
 
 }
+    function rankingParticipantes(mt){
+
+    const data = {};
+
+    mt.forEach(x=>{
+
+        if(!x.PARTICIPANTES)
+            return;
+
+        x.PARTICIPANTES
+        .split(";")
+        .forEach(p=>{
+
+            p = p.trim();
+
+            if(!p) return;
+
+            data[p] =
+                (data[p] || 0)
+                +
+                (+x.COSTO_TOTAL || 0);
+
+        });
+
+    });
+
+    const top =
+        Object.entries(data)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,10);
+
+    graf(
+        "c6",
+        top.map(x=>x[0]),
+        top.map(x=>x[1]),
+        "Top Participantes"
+    );
+}
+
+    function rankingOrigen(mt){
+
+    const data = {};
+
+    mt.forEach(x=>{
+
+        data[x.ORIGEN] =
+            (data[x.ORIGEN] || 0)
+            +
+            (+x.COSTO_TOTAL || 0);
+
+    });
+
+    graf(
+        "c5",
+        Object.keys(data),
+        Object.values(data),
+        "Costo por Tipo de Trabajo"
+    );
+
+}
+    
 
 function rankingClientes(){
 
@@ -421,22 +486,26 @@ function rankingMateriales(mt){
 
     mt.forEach(x=>{
 
-        data[x.Material] =
-            (data[x.Material]||0)
-            + (+x.Importe||0);
+        const mat =
+            x.MATERIAL || "Sin Material";
+
+        data[mat] =
+            (data[mat] || 0)
+            +
+            (+x.COSTO_TOTAL || 0);
 
     });
 
     const top =
         Object.entries(data)
         .sort((a,b)=>b[1]-a[1])
-        .slice(0,10);
+        .slice(0,15);
 
     graf(
         "c2",
         top.map(x=>x[0]),
         top.map(x=>x[1]),
-        "Top Materiales"
+        "Top Materiales por Costo"
     );
 
 }
