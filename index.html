@@ -139,6 +139,7 @@ function calle(d){
 
 }
 
+
 function read(f){
 
     return new Promise(resolve=>{
@@ -176,10 +177,10 @@ async function procesar(){
 
     mt.forEach(m=>{
 
-        const key =
-            String(m.Titular || "")
-            .trim()
-            .toUpperCase();
+       const key =
+    normalizarTitular(
+        m.Titular
+    );
 
         if(!map[key]){
 
@@ -214,12 +215,12 @@ async function procesar(){
 
     base = ot.map(o=>{
 
-        const info =
-            map[
-                String(o.Titular || "")
-                .trim()
-                .toUpperCase()
-            ];
+       const info =
+    map[
+        normalizarTitular(
+            o.Titular
+        )
+    ];
 
         return {
 
@@ -249,8 +250,31 @@ async function procesar(){
         "Titular ejemplo:",
         ot[0].Titular
     );
+const encontrados =
+    base.filter(
+        x => x.CantidadMateriales > 0
+    ).length;
 
+console.log(
+    "OT con cruce:",
+    encontrados
+);
+
+console.log(
+    "OT Totales:",
+    base.length
+);
     render(mt);
+
+}
+    function normalizarTitular(nombre){
+
+    return String(nombre || "")
+        .toUpperCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g,"")
+        .replace(/\s+/g," ")
+        .trim();
 
 }
 
