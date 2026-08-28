@@ -165,108 +165,101 @@ async function procesar(){
     const ot =
         await read(
             document
-            .getElementById("otFile")
-            .files[0]
+                .getElementById("otFile")
+                .files[0]
         );
 
     const mt =
         await read(
             document
-            .getElementById("matFile")
-            .files[0]
+                .getElementById("matFile")
+                .files[0]
         );
 
     const map = {};
 
     mt.forEach(m=>{
 
-      
-mt.forEach(m=>{
+        const key = String(m.OT || "");
 
-    const key =
-        String(m.OT || "");
+        if(!map[key]){
 
-    if(!map[key]){
+            map[key] = {
 
-        map[key] = {
-            costo:0,
-            cant:0,
-            participantes:new Set()
-        };
+                costo:0,
+                cantidadMateriales:0,
+                participantes:new Set(),
+                materiales:new Set()
 
-    }
+            };
 
-    map[key].costo +=
-        (+m.COSTO_TOTAL || 0);
+        }
 
-    map[key].cant++;
+        map[key].costo +=
+            (+m.COSTO_TOTAL || 0);
 
-    if(m.PARTICIPANTES){
+        map[key].cantidadMateriales++;
 
-        m.PARTICIPANTES
-            .split(";")
-            .forEach(p=>{
+        if(m.MATERIAL){
 
-                if(p.trim())
-                    map[key]
-                    .participantes
-                    .add(p.trim());
+            map[key]
+                .materiales
+                .add(m.MATERIAL);
 
-            });
+        }
 
-    }
+        if(m.PARTICIPANTES){
 
-});
+            m.PARTICIPANTES
+                .split(";")
+                .forEach(p=>{
 
-     
+                    if(p.trim()){
+
+                        map[key]
+                            .participantes
+                            .add(p.trim());
+
+                    }
+
+                });
+
+        }
+
+    });
+
     base = ot.map(o=>{
 
-    const info =
-    map[String(o.OT)];
+        const info =
+            map[String(o.OT)] || {};
 
         return {
 
             ...o,
 
             CostoOT:
-                info?.costo || 0,
+                info.costo || 0,
 
             CantidadMateriales:
-                info?.cant || 0,
+                info.cantidadMateriales || 0,
 
             Participantes:
-                info
+                info.participantes
                 ? [...info.participantes].join(", ")
+                : "",
+
+            Materiales:
+                info.materiales
+                ? [...info.materiales].join(", ")
                 : ""
 
         };
 
     });
 
-    console.log(
-        "Titulares Materiales:",
-        Object.keys(map).length
-    );
-
-    console.log(
-        "Titular ejemplo:",
-        ot[0].Titular
-    );
-const encontrados =
-    base.filter(
-        x => x.CantidadMateriales > 0
-    ).length;
-
-console.log(
-    "OT con cruce:",
-    encontrados
-);
-
-console.log(
-    "OT Totales:",
-    base.length
-);
     render(mt);
+
+}
 
 }
     function normalizarTitular(nombre){
